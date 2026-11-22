@@ -1,0 +1,526 @@
+/*
+ * Sistema de diseño de Figma: «IE Esteban Ochoa — Sistema de Salida Escolar»
+ * (página ① Sistema). Los nombres de las variables son los del archivo.
+ */
+:root {
+  /* Superficies */
+  --fondo: #f4f8f8;
+  --superficie: #ffffff;
+  --superficie-hundida: #e4efef;
+  --barra: #131b2b;
+  --marca-suave: #cfeae0;
+
+  /* Texto */
+  --texto: #131b2b;
+  --texto-suave: #4f6676;
+  --texto-sutil: #6f8794;
+  --texto-sobre-relleno: #ffffff;
+  --texto-sobre-oscuro: #e6f0ec;
+
+  /* Acción y marca */
+  --accion-primaria: #2f4a63;
+  --tinta-acento: #3e5f7b;
+  --tinta-marca: #2f4a63;
+
+  /* Bordes */
+  --borde: #d3e2e4;
+  --borde-fuerte: #b4cbd0;
+
+  /* Estados */
+  --critico-tinta: #b3261e;
+  --critico-superficie: #fdecea;
+  --ambar-tinta: #9a6000;
+  --ambar-superficie: #fdf3e2;
+  --ambar-borde: #e3c38a;
+  --verde-tinta: #2e7d5b;
+
+  /* Espaciado y radios */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --radio-sm: 8px;
+  --radio-md: 12px;
+  --radio-lg: 16px;
+
+  /* Tipografía */
+  --fuente-titulo: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --fuente-texto: 'Inter Variable', Inter, system-ui, sans-serif;
+
+  font-family: var(--fuente-texto);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--fondo);
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--tinta-acento);
+  outline-offset: 2px;
+}
+
+/* --- Estilos de texto del sistema --- */
+.t-h1 {
+  margin: 0;
+  font-family: var(--fuente-titulo);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.22px;
+}
+
+.t-h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.t-pequeno {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.t-etiqueta {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 1.54px;
+}
+
+.t-suave {
+  color: var(--texto-suave);
+}
+
+.t-sutil {
+  color: var(--texto-sutil);
+}
+
+/* --- Pantalla de acceso (frames 35:580 y 35:678) --- */
+.acceso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s5);
+  width: 100%;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--s4);
+}
+
+.acceso--estado {
+  gap: var(--s6);
+}
+
+.acceso__titulo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  width: 100%;
+  text-align: center;
+}
+
+.acceso__espaciador {
+  flex: 1 0 0;
+}
+
+.acceso__pie {
+  text-align: center;
+}
+
+.marca {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  font-family: var(--fuente-titulo);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.22px;
+  color: var(--texto-sobre-relleno);
+  background: var(--accion-primaria);
+  border-radius: var(--radio-lg);
+}
+
+/* Señal circular de las pantallas de estado (35:709) */
+.senal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: 68px;
+  height: 68px;
+  font-family: var(--fuente-titulo);
+  font-size: 22px;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.senal--exito {
+  color: var(--verde-tinta);
+  background: var(--marca-suave);
+}
+
+.senal--critico {
+  color: var(--critico-tinta);
+  background: var(--critico-superficie);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  width: 100%;
+}
+
+/* --- Campo (componente 8:90) --- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  width: 100%;
+}
+
+.campo__etiqueta {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.campo__caja {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  background: var(--superficie);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-md);
+}
+
+/* El borde de 2px de Foco y Error no debe mover el contenido. */
+.campo__caja:focus-within {
+  border-color: var(--tinta-acento);
+  box-shadow: inset 0 0 0 1px var(--tinta-acento);
+}
+
+.campo--error .campo__caja {
+  border-color: var(--critico-tinta);
+  box-shadow: inset 0 0 0 1px var(--critico-tinta);
+}
+
+.campo__caja input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: var(--s3) var(--s4);
+  font-size: 15px;
+  line-height: 1.5;
+  background: none;
+  border: 0;
+  outline: none;
+}
+
+.campo__ver {
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0 var(--s4);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-acento);
+  background: none;
+  border: 0;
+  border-radius: var(--radio-md);
+  cursor: pointer;
+}
+
+.campo__ayuda {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--texto-sutil);
+}
+
+.campo__error {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--critico-tinta);
+}
+
+/* --- Botón (componente 8:42) --- */
+.boton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s2);
+  width: 100%;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.boton:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+/* Primario XL: 56px, radio grande */
+.boton--primario {
+  height: 56px;
+  padding: var(--s3) var(--s6);
+  color: var(--texto-sobre-relleno);
+  background: var(--accion-primaria);
+  border-radius: var(--radio-lg);
+}
+
+.boton--primario:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accion-primaria) 88%, black);
+}
+
+/* Secundario: superficie con borde */
+.boton--secundario {
+  height: 44px;
+  padding: var(--s3) var(--s5);
+  color: var(--tinta-marca);
+  background: var(--superficie);
+  border-color: var(--borde-fuerte);
+  border-radius: var(--radio-md);
+}
+
+.boton--secundario:hover:not(:disabled) {
+  background: var(--superficie-hundida);
+}
+
+/* Terciario: solo texto */
+.boton--terciario {
+  height: 44px;
+  padding: var(--s3) var(--s5);
+  color: var(--tinta-acento);
+  background: none;
+  border-radius: var(--radio-md);
+}
+
+.boton--terciario:hover {
+  background: var(--superficie-hundida);
+}
+
+/* --- Alerta (componente 10:22) --- */
+.alerta {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s3);
+  width: 100%;
+  padding: var(--s4);
+  border: 1px solid;
+  border-radius: var(--radio-md);
+}
+
+.alerta__icono,
+.alerta__titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.alerta__texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+.alerta__detalle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--texto-suave);
+}
+
+.alerta--advertencia {
+  color: var(--ambar-tinta);
+  background: var(--ambar-superficie);
+  border-color: var(--ambar-borde);
+}
+
+.alerta--exito {
+  color: var(--verde-tinta);
+  background: color-mix(in srgb, var(--marca-suave) 50%, white);
+  border-color: color-mix(in srgb, var(--verde-tinta) 35%, white);
+}
+
+.alerta--critica {
+  color: var(--critico-tinta);
+  background: var(--critico-superficie);
+  border-color: color-mix(in srgb, var(--critico-tinta) 35%, white);
+}
+
+.cargando {
+  padding: var(--s6);
+  text-align: center;
+  color: var(--texto-sutil);
+}
+
+/* --- App autenticada (frames 35:608 y 35:643) --- */
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--fondo);
+}
+
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  height: 56px;
+  padding: var(--s4);
+  color: var(--texto-sobre-oscuro);
+  background: var(--barra);
+}
+
+.barra__atras {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto-sobre-oscuro);
+  background: rgb(255 255 255 / 0.14);
+  border: 0;
+  border-radius: var(--radio-sm);
+  cursor: pointer;
+}
+
+.barra__titulo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app__cuerpo {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  gap: var(--s4);
+  padding: var(--s4);
+}
+
+.navegacion {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  height: 64px;
+  background: var(--superficie);
+  border-top: 1px solid var(--borde);
+}
+
+.navegacion__item {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s1);
+  min-width: 0;
+  padding: var(--s2) var(--s1) var(--s3);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--texto-sutil);
+}
+
+.navegacion__item[aria-current='page'] {
+  color: var(--tinta-acento);
+}
+
+.navegacion__icono {
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+/* Tarjetas */
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  width: 100%;
+  padding: var(--s4);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+
+.tarjeta--destacada {
+  gap: var(--s2);
+  background: var(--marca-suave);
+  border-color: var(--texto);
+}
+
+.tarjeta__titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.datos {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--s2) var(--s4);
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.datos dt {
+  color: var(--texto-sutil);
+}
+
+.datos dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.etiqueta-tinta {
+  color: var(--tinta-marca);
+}
