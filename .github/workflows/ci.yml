@@ -54,7 +54,11 @@ jobs:
             echo "::error::Falta el secreto DOKPLOY_WEBHOOK_WEB."
             exit 1
           fi
-          codigo=$(curl -sS -X POST -o respuesta.txt -w '%{http_code}' "$WEBHOOK")
+          # Dokploy compara la rama del evento con la de la app: sin estos datos
+          # responde 301 "Branch Not Match" y no despliega nada.
+          codigo=$(curl -sS -X POST -o respuesta.txt -w '%{http_code}' \
+            -H 'Content-Type: application/json' -H 'X-GitHub-Event: push' \
+            -d "{\"ref\":\"$GITHUB_REF\",\"commits\":[]}" "$WEBHOOK")
           echo "Dokploy respondió $codigo"
           cat respuesta.txt
-          [ "$codigo" -lt 400 ] || exit 1
+          [ "$codigo" = 200 ] || exit 1
