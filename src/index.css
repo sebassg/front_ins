@@ -9,6 +9,8 @@
   --superficie-hundida: #e4efef;
   --barra: #131b2b;
   --marca-suave: #cfeae0;
+  --marca-sutil: #e8f4f0;
+  --superficie-2: #edf4f4;
 
   /* Texto */
   --texto: #131b2b;
@@ -21,6 +23,7 @@
   --accion-primaria: #2f4a63;
   --tinta-acento: #3e5f7b;
   --tinta-marca: #2f4a63;
+  --tinta-eyebrow: #4a7a91;
 
   /* Bordes */
   --borde: #d3e2e4;
@@ -29,10 +32,14 @@
   /* Estados */
   --critico-tinta: #b3261e;
   --critico-superficie: #fdecea;
+  --critico-relleno: #b3261e;
+  --critico-borde: #e8a9a4;
   --ambar-tinta: #9a6000;
   --ambar-superficie: #fdf3e2;
   --ambar-borde: #e3c38a;
   --verde-tinta: #2e7d5b;
+  --verde-superficie: #e7f4ee;
+  --verde-borde: #9ccdb6;
 
   /* Espaciado y radios */
   --s1: 4px;
@@ -44,6 +51,7 @@
   --radio-sm: 8px;
   --radio-md: 12px;
   --radio-lg: 16px;
+  --radio-full: 999px;
 
   /* Tipografía */
   --fuente-titulo: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -86,6 +94,14 @@ input {
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.22px;
+}
+
+.t-h2 {
+  margin: 0;
+  font-family: var(--fuente-titulo);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .t-h3 {
@@ -232,7 +248,18 @@ input {
   box-shadow: inset 0 0 0 1px var(--critico-tinta);
 }
 
-.campo__caja input {
+.campo--valido .campo__caja {
+  border-color: var(--verde-tinta);
+}
+
+.campo--deshabilitado .campo__caja {
+  color: var(--texto-sutil);
+  background: var(--superficie-hundida);
+  border-color: var(--borde);
+}
+
+.campo__caja input,
+.campo__caja select {
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -269,6 +296,39 @@ input {
   font-size: 13px;
   line-height: 1.45;
   color: var(--critico-tinta);
+}
+
+.campo__valido {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--verde-tinta);
+}
+
+/* Selector: misma caja que el campo de texto, con la flecha del sistema. */
+.campo__caja select {
+  appearance: none;
+  padding-right: calc(var(--s4) * 2 + 8px);
+  background: none;
+  cursor: pointer;
+}
+
+.campo__caja--selector {
+  position: relative;
+}
+
+.campo__caja--selector::after {
+  content: '▾';
+  position: absolute;
+  right: var(--s4);
+  font-size: 13px;
+  color: var(--texto-sutil);
+  pointer-events: none;
+}
+
+.campo__caja input:disabled,
+.campo__caja select:disabled {
+  cursor: default;
 }
 
 /* --- Botón (componente 8:42) --- */
@@ -331,6 +391,15 @@ input {
   background: var(--superficie-hundida);
 }
 
+/* Deshabilitado es un tipo propio (8:42): visible y apagado, no oculto. */
+.boton--deshabilitado,
+.boton--deshabilitado:hover:not(:disabled) {
+  color: var(--texto-sutil);
+  background: var(--superficie-hundida);
+  border-color: var(--borde);
+  cursor: not-allowed;
+}
+
 /* --- Alerta (componente 10:22) --- */
 .alerta {
   display: flex;
@@ -371,10 +440,16 @@ input {
   border-color: var(--ambar-borde);
 }
 
+.alerta--info {
+  color: var(--tinta-marca);
+  background: var(--marca-sutil);
+  border-color: var(--borde);
+}
+
 .alerta--exito {
   color: var(--verde-tinta);
-  background: color-mix(in srgb, var(--marca-suave) 50%, white);
-  border-color: color-mix(in srgb, var(--verde-tinta) 35%, white);
+  background: var(--verde-superficie);
+  border-color: var(--verde-borde);
 }
 
 .alerta--critica {
@@ -523,4 +598,356 @@ input {
 
 .etiqueta-tinta {
   color: var(--tinta-marca);
+}
+
+/* Etiqueta de sección de los formularios y fichas (49:89, 49:180) */
+.eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 1.54px;
+  color: var(--tinta-eyebrow);
+}
+
+/* --- Badge de estado (componente 8:67) --- */
+.badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s1) var(--s3);
+  white-space: nowrap;
+  border: 1px solid;
+  border-radius: var(--radio-full);
+}
+
+.badge__icono {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.badge__texto {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 1.54px;
+}
+
+.badge--vigente,
+.badge--entregado {
+  color: var(--verde-tinta);
+  background: var(--verde-superficie);
+  border-color: var(--verde-borde);
+}
+
+.badge--presente {
+  color: var(--tinta-marca);
+  background: var(--marca-suave);
+  border-color: var(--borde);
+}
+
+.badge--pendiente,
+.badge--usado {
+  color: var(--texto-suave);
+  background: var(--superficie-2);
+  border-color: var(--borde-fuerte);
+}
+
+.badge--vencido {
+  color: var(--ambar-tinta);
+  background: var(--ambar-superficie);
+  border-color: var(--ambar-borde);
+}
+
+.badge--bloqueado {
+  color: var(--critico-tinta);
+  background: var(--critico-superficie);
+  border-color: var(--critico-borde);
+}
+
+.badge--restriccion {
+  color: var(--texto-sobre-relleno);
+  background: var(--critico-relleno);
+  border-color: var(--critico-relleno);
+}
+
+/* --- Avatar (componente 8:103): iniciales, nunca fotografía --- */
+.avatar {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  font-family: var(--fuente-titulo);
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+  border-radius: var(--radio-md);
+}
+
+.avatar--56 {
+  width: 56px;
+  height: 56px;
+  font-size: 19px;
+}
+
+.avatar--marca {
+  color: var(--tinta-marca);
+  background: var(--marca-suave);
+}
+
+.avatar--accion {
+  color: var(--texto-sobre-relleno);
+  background: var(--accion-primaria);
+}
+
+.avatar--critico {
+  color: var(--texto-sobre-relleno);
+  background: var(--critico-relleno);
+}
+
+/* --- Listado de estudiantes (49:21) --- */
+.app__cuerpo--pleno {
+  gap: 0;
+  padding: 0;
+}
+
+.buscador {
+  padding: var(--s3) var(--s4);
+  background: var(--superficie);
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista__vacia {
+  padding: var(--s6) var(--s4);
+  text-align: center;
+}
+
+.lista__mas {
+  padding: var(--s2) var(--s4);
+}
+
+/* «Fila de estudiante» (componente 10:94) */
+.fila-estudiante {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  color: inherit;
+  text-decoration: none;
+  background: var(--superficie);
+}
+
+a.fila-estudiante:hover {
+  background: var(--superficie-2);
+}
+
+.fila-estudiante--restriccion,
+a.fila-estudiante--restriccion:hover {
+  background: var(--critico-superficie);
+}
+
+.fila-estudiante__info {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+.fila-estudiante__nombre {
+  margin: 0;
+  font-weight: 600;
+}
+
+.fila-estudiante__detalle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--texto-suave);
+}
+
+.fila-estudiante--restriccion .fila-estudiante__detalle {
+  color: var(--critico-tinta);
+}
+
+.espaciador {
+  flex: 1 0 0;
+}
+
+/* Bloque de acción al pie de una lista (20:702) */
+.accion-pie {
+  position: sticky;
+  bottom: 64px;
+  padding: var(--s4);
+  background: var(--superficie);
+  border-top: 1px solid var(--borde);
+}
+
+/* --- Ficha del estudiante (49:155) --- */
+.ficha {
+  gap: var(--s4);
+  overflow: hidden;
+}
+
+.ficha__fila {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.ficha__info {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+.separador {
+  width: 100%;
+  height: 1px;
+  margin: 0;
+  background: var(--borde);
+  border: 0;
+}
+
+.lista-datos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  margin: 0;
+}
+
+/* Fila etiqueta · espaciador · valor (49:170) */
+.dato {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.dato dt {
+  flex: 1 0 auto;
+  color: var(--texto-suave);
+}
+
+.dato dd {
+  min-width: 0;
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.tarjeta__fila {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.tarjeta__chevron {
+  font-weight: 600;
+  color: var(--texto-sutil);
+}
+
+/* Casilla dentro de una alerta (autorización de tratamiento de datos) */
+.casilla {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+  margin-top: var(--s2);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--texto);
+  cursor: pointer;
+}
+
+.casilla input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accion-primaria);
+}
+
+.casilla--error {
+  color: var(--critico-tinta);
+}
+
+/* --- Historial de auditoría (49:245) --- */
+.historial {
+  gap: var(--s4);
+}
+
+.historial__lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.asiento {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s3);
+}
+
+.asiento__punto {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: 3px;
+  background: var(--accion-primaria);
+  border-radius: 5px;
+}
+
+.asiento__texto {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+/* Sección de formulario con su etiqueta (49:89 «Datos del estudiante») */
+.seccion-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.seccion-formulario > legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+}
+
+.seccion-formulario > legend + * {
+  clear: both;
+}
+
+.asiento__titulo {
+  font-weight: 600;
 }
