@@ -1,0 +1,60 @@
+# =============================================================================
+#  Integración continua del frontend de Retiro Seguro.
+#  En cada push y pull request: lint, tipos, pruebas y compilación.
+#  Si todo pasa y el push fue a main, se le pide a Dokploy que despliegue.
+# =============================================================================
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24'
+
+jobs:
+  verificacion:
+    name: Lint, tipos, pruebas y compilación
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Tipos
+        run: npm run typecheck
+      - name: Pruebas
+        run: npm test
+      - name: Compilar
+        run: npm run build
+
+  despliegue:
+    name: Desplegar en el servidor
+    needs: [verificacion]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    environment: produccion
+    steps:
+      - name: Avisar a Dokploy
+        env:
+          WEBHOOK: ${{ secrets.DOKPLOY_WEBHOOK_WEB }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then
+            echo "::error::Falta el secreto DOKPLOY_WEBHOOK_WEB."
+            exit 1
+          fi
+          codigo=$(curl -sS -X POST -o respuesta.txt -w '%{http_code}' "$WEBHOOK")
+          echo "Dokploy respondió $codigo"
+          cat respuesta.txt
+          [ "$codigo" -lt 400 ] || exit 1
