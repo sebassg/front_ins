@@ -7,7 +7,7 @@ I.E. Esteban Ochoa (Equipo 1.1). Consume la API de [`back_ins`](https://github.c
 react-hook-form + zod · Vitest + Testing Library.
 
 **Diseño**: [Figma — Sistema de Salida Escolar](https://www.figma.com/design/q0iuLqhrBRGPQgTf9Yz7CL/IE-Esteban-Ochoa-%E2%80%94-Sistema-de-Salida-Escolar),
-página ② Flujos, flujo F1. Los tokens de `src/index.css` llevan los nombres
+página ② Flujos (flujo F1) y página ③ Plantillas (HU01). Los tokens de `src/index.css` llevan los nombres
 de las variables del archivo.
 
 ## Estado
@@ -15,6 +15,7 @@ de las variables del archivo.
 | Entrega | Historias | Pantallas |
 |---|---|---|
 | v1 | HU07 (inicio de sesión del acudiente) · HU12 (inicio de sesión del personal por rol) | Login, recuperar y restablecer contraseña, activar cuenta, inicio con perfil y rol |
+| v2 | HU01 (estudiantes y acudientes titulares, personal administrativo) | Listado y búsqueda, registro, ficha, edición con historial |
 
 ## Puesta en marcha
 
@@ -38,7 +39,11 @@ API no necesita CORS. Para apuntar a otro backend: `API_URL=http://host:3000 npm
 | `/restablecer-contrasena?token=` | `POST auth/restablecer-contrasena` | HU07-E3 (enlace del correo) |
 | `/reenviar-activacion` | `POST auth/reenviar-activacion` | HU07-E1 |
 | `/activar-cuenta?token=` | `POST auth/activar` | HU07-E1 (enlace del correo) |
-| `/` | `GET usuarios/yo` | HU12-E1 (protegida) |
+| `/` | `GET usuarios/yo` | HU12-E1 (protegida; ADMINISTRATIVO va a `/estudiantes`) |
+| `/estudiantes` | `GET estudiantes?buscar&pagina&porPagina` | HU01-E3 (solo ADMINISTRATIVO) |
+| `/estudiantes/nuevo` | `GET grupos` · `POST estudiantes` | HU01-E1, HU01-E2 |
+| `/estudiantes/:uuid` | `GET estudiantes/:uuid` | HU01-E3 |
+| `/estudiantes/:uuid/editar` | `PATCH estudiantes/:uuid` · `PATCH estudiantes/:uuid/acudientes/:uuidAcudiente` | HU01-E3 |
 
 `/restablecer-contrasena` y `/activar-cuenta` son las URLs que el backend pone
 en los correos (`URL_RESTABLECER_CONTRASENA` y `URL_APP` en su `.env`).
@@ -53,7 +58,29 @@ en los correos (`URL_RESTABLECER_CONTRASENA` y `URL_APP` en su `.env`).
 - **Entrada según rol** (35:608, 35:643): la tarjeta «Salida de hoy» y las
   acciones dependen de HU02–HU09. Hoy la entrada muestra el saludo, el rol y el
   menú de cada rol; las secciones pendientes lo dicen.
-- **Menú del rol ADMINISTRATIVO**: no tiene frame; usa Inicio, Usuarios y Más.
+- **Menú del rol ADMINISTRATIVO**: el de la plantilla HU01 (Estudiantes, Cuentas,
+  Más). Cuentas (HU12) sigue pendiente.
+- **Registrar estudiante** (49:83): el backend exige más de lo que muestra la
+  plantilla. «Nombre completo» se divide en Nombres y Apellidos, y se agregan
+  Fecha de nacimiento, Tipo de documento, Correo, Teléfono y Parentesco del
+  acudiente, todos con el componente Campo. La autorización de tratamiento de
+  datos es una casilla dentro de la alerta informativa: el backend exige
+  registrarla explícitamente.
+- **Validación y duplicidad** (49:127): la alerta cuenta los datos que faltan;
+  si el backend rechaza por duplicidad (409), el mensaje va junto al campo que
+  indica (`campo`) y la alerta dice «Hay N datos por corregir».
+- **Listado** (49:21): la plantilla no trae cómo llegar al registro; se usa el
+  bloque «Acción» de la lista del grupo (20:702) con «Registrar estudiante».
+  Los retirados llevan el badge Usado («⊘ Retirada»).
+- **Ficha** (49:155): «Terceros autorizados» se muestra sin enlace hasta HU03.
+- **Editar ficha** (49:225): no hay frame para editar los datos del
+  estudiante; siguen la misma plantilla en una sola pantalla con los del
+  acudiente. El tipo y número de documento no se pueden cambiar (el backend no
+  lo permite) y se muestran deshabilitados.
+- **Historial de auditoría** (49:245): el backend no expone la auditoría. El
+  historial se arma con la ficha (`actualizadoPor`, `actualizadoEn`,
+  `creadoEn`, autorización de datos); el detalle «antes → después» solo se
+  conoce para los cambios guardados en la sesión.
 - Recuperar, restablecer y activar no tienen frame: siguen «Acceso único».
 
 ## Sesión
@@ -74,6 +101,7 @@ en los correos (`URL_RESTABLECER_CONTRASENA` y `URL_APP` en su `.env`).
 src/
 ├── api/          cliente HTTP, endpoints y tipos (espejo de back_ins)
 ├── auth/         AuthProvider, guards de ruta y esquemas zod
+├── estudiantes/  esquemas, formatos y errores de HU01
 ├── components/   piezas de UI compartidas
 ├── pages/        una pantalla por ruta
 └── test/         setup de Vitest y fetch simulado
