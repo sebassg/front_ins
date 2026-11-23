@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router';
 import { NOMBRE_ROL } from '../api/tipos';
 import { useAuth } from '../auth/auth-context';
 import { MENU_POR_ROL } from '../auth/menu-por-rol';
@@ -10,6 +11,8 @@ import { MENU_POR_ROL } from '../auth/menu-por-rol';
 export function InicioPage() {
   const { usuario } = useAuth();
   if (!usuario) return null;
+  // El personal administrativo entra directo a su función principal (HU01).
+  if (usuario.rol === 'ADMINISTRATIVO') return <Navigate to="/estudiantes" replace />;
   const secciones = MENU_POR_ROL[usuario.rol].filter((d) => d.ruta !== '/' && d.historia);
 
   return (

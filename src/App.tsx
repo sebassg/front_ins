@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { ApiError } from './api/client';
 import { AuthProvider } from './auth/AuthProvider';
+import { RutaPorRol } from './auth/RutaPorRol';
 import { RutaProtegida, RutaSoloAnonimo } from './auth/RutaProtegida';
 import { FijarContrasenaPage } from './pages/FijarContrasenaPage';
 import { IniciarSesionPage } from './pages/IniciarSesionPage';
@@ -11,6 +12,10 @@ import { InicioPage } from './pages/InicioPage';
 import { MasPage } from './pages/MasPage';
 import { SeccionPendientePage } from './pages/SeccionPendientePage';
 import { SolicitarEnlacePage } from './pages/SolicitarEnlacePage';
+import { EditarFichaPage } from './pages/estudiantes/EditarFichaPage';
+import { EstudiantesPage } from './pages/estudiantes/EstudiantesPage';
+import { FichaEstudiantePage } from './pages/estudiantes/FichaEstudiantePage';
+import { RegistrarEstudiantePage } from './pages/estudiantes/RegistrarEstudiantePage';
 
 function crearQueryClient() {
   return new QueryClient({
@@ -62,6 +67,13 @@ export function Rutas() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<InicioPage />} />
           <Route path="/mas" element={<MasPage />} />
+          {/* HU01: estudiantes y acudientes titulares, solo personal administrativo. */}
+          <Route element={<RutaPorRol roles={['ADMINISTRATIVO']} />}>
+            <Route path="/estudiantes" element={<EstudiantesPage />} />
+            <Route path="/estudiantes/nuevo" element={<RegistrarEstudiantePage />} />
+            <Route path="/estudiantes/:uuid" element={<FichaEstudiantePage />} />
+            <Route path="/estudiantes/:uuid/editar" element={<EditarFichaPage />} />
+          </Route>
           <Route path="/:seccion" element={<SeccionPendientePage />} />
         </Route>
       </Route>

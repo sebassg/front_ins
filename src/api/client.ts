@@ -5,11 +5,17 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
 /** Error de la API con el mensaje que la persona puede leer. */
 export class ApiError extends Error {
   readonly status: number;
+  /** Campo del formulario al que apunta el error de negocio (400/409). */
+  readonly campo?: string;
+  /** Todos los mensajes de validación (`"ruta: mensaje"`), si vinieron varios. */
+  readonly mensajes: string[];
 
-  constructor(status: number, mensaje: string) {
+  constructor(status: number, mensaje: string, detalle: { campo?: string; mensajes?: string[] } = {}) {
     super(mensaje);
     this.name = 'ApiError';
     this.status = status;
+    this.campo = detalle.campo;
+    this.mensajes = detalle.mensajes ?? [];
   }
 }
 
@@ -23,21 +29,27 @@ const MENSAJES_POR_ESTADO: Record<number, string> = {
 const MENSAJE_SIN_CONEXION =
   'No fue posible conectarse. Revisa tu conexión a internet.';
 
-/** Nest responde `{ statusCode, message }`; `message` puede ser una lista. */
-async function mensajeDeError(respuesta: Response): Promise<string> {
+/**
+ * Nest responde `{ statusCode, message }`; `message` puede ser una lista
+ * (validación) y los errores de negocio traen además `campo`.
+ */
+async function errorDeRespuesta(respuesta: Response): Promise<ApiError> {
   const porEstado = MENSAJES_POR_ESTADO[respuesta.status];
-  if (porEstado) return porEstado;
+  if (porEstado) return new ApiError(respuesta.status, porEstado);
   try {
-    const cuerpo = (await respuesta.json()) as { message?: unknown };
-    const { message } = cuerpo;
-    if (typeof message === 'string' && message) return message;
+    const { message, campo } = (await respuesta.json()) as { message?: unknown; campo?: unknown };
+    const detalle = { campo: typeof campo === 'string' && campo ? campo : undefined };
+    if (typeof message === 'string' && message) {
+      return new ApiError(respuesta.status, message, detalle);
+    }
     if (Array.isArray(message) && typeof message[0] === 'string') {
-      return message[0];
+      const mensajes = message.filter((m): m is string => typeof m === 'string');
+      return new ApiError(respuesta.status, mensajes[0], { ...detalle, mensajes });
     }
   } catch {
     // Cuerpo vacío o no JSON: se usa el mensaje genérico.
   }
-  return 'No fue posible completar la solicitud.';
+  return new ApiError(respuesta.status, 'No fue posible completar la solicitud.');
 }
 
 // --- Sesión en memoria -----------------------------------------------------
@@ -136,7 +148,7 @@ export async function peticion<T>(
   }
 
   if (!respuesta.ok) {
-    throw new ApiError(respuesta.status, await mensajeDeError(respuesta));
+    throw await errorDeRespuesta(respuesta);
   }
   if (respuesta.status === 204) return undefined as T;
   const texto = await respuesta.text();

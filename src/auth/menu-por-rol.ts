@@ -13,7 +13,8 @@ export interface DestinoMenu {
  * HU12-E1: cada persona ve solo las funciones de su rol; lo prohibido no se
  * muestra en gris, directamente no está.
  *
- * ACUDIENTE y DOCENTE salen del diseño; ADMINISTRATIVO no tiene frame aún.
+ * Los tres menús salen del diseño; el de ADMINISTRATIVO es el de la
+ * plantilla HU01 (38:15). Su destino principal es el listado de estudiantes.
  */
 export const MENU_POR_ROL: Record<Rol, DestinoMenu[]> = {
   ACUDIENTE: [
@@ -29,8 +30,8 @@ export const MENU_POR_ROL: Record<Rol, DestinoMenu[]> = {
     { ruta: '/mas', etiqueta: 'Más', icono: '☰' },
   ],
   ADMINISTRATIVO: [
-    { ruta: '/', etiqueta: 'Inicio', icono: '⌂' },
-    { ruta: '/usuarios', etiqueta: 'Usuarios', icono: '⊞', historia: 'HU12' },
+    { ruta: '/estudiantes', etiqueta: 'Estudiantes', icono: '⊞' },
+    { ruta: '/cuentas', etiqueta: 'Cuentas', icono: '⊕', historia: 'HU12' },
     { ruta: '/mas', etiqueta: 'Más', icono: '☰' },
   ],
 };

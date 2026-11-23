@@ -94,4 +94,33 @@ describe('cliente del API', () => {
       message: expect.stringContaining('No fue posible conectarse') as string,
     });
   });
+
+  it('conserva el campo de los errores de negocio y la lista de validación', async () => {
+    fetchFalso({
+      'POST /estudiantes': () => ({
+        status: 409,
+        body: { statusCode: 409, message: 'Ya existe una cuenta con ese correo electrónico', campo: 'acudiente.correo' },
+      }),
+      'PATCH /estudiantes/x': () => ({
+        status: 400,
+        body: {
+          statusCode: 400,
+          error: 'Bad Request',
+          message: ['nombres: Ingrese los nombres', 'acudiente.correo: Ingrese un correo electrónico válido'],
+        },
+      }),
+    });
+
+    await expect(peticion('/estudiantes', { method: 'POST', body: {} })).rejects.toMatchObject({
+      status: 409,
+      campo: 'acudiente.correo',
+      message: 'Ya existe una cuenta con ese correo electrónico',
+    });
+    await expect(peticion('/estudiantes/x', { method: 'PATCH', body: {} })).rejects.toMatchObject({
+      status: 400,
+      campo: undefined,
+      message: 'nombres: Ingrese los nombres',
+      mensajes: ['nombres: Ingrese los nombres', 'acudiente.correo: Ingrese un correo electrónico válido'],
+    });
+  });
 });
